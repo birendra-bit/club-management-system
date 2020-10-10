@@ -17,7 +17,12 @@ class Api::V1::UsersController < ApplicationController
         @user = User.create(user_params)
 
         if @user.valid?
-          token = encode_token({user_id: @user.id})
+          payload = {
+              user_id: @user.id,
+              is_admin: @user.is_admin
+          }  
+          puts('payload ', payload )
+          token = encode_token(payload)
           render json: {is_success:true, message:'user signup successfull', data: @user, token: token}, status: 201
         else
           render json: {is_success:false, message:'Invalid credential'}, status: 400
