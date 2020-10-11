@@ -13,6 +13,8 @@ Rails.application.routes.draw do
       # newsfeeds api
       get "/newsfeeds", to: "newsfeeds#index"
       post "/newsfeeds", to: "newsfeeds#create"
+      patch "/newsfeeds/:id", to: "newsfeeds#update"
+      delete "/newsfeeds/:id", to: "newsfeeds#destroy"
     end
   end
 end
