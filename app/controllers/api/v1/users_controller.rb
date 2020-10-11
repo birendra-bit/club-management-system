@@ -1,121 +1,130 @@
 class Api::V1::UsersController < ApplicationController
-    before_action :authorized, only: [:auto_login, :update, :destroy]
+    before_action :authorized, only: [:auto_login, :update]
+    # before_action :authorized, :isadmin, only: [:destroy]
 
-    def index
+    begin
+        def index
 
-        @users = User.all
+            @users = User.all
 
-        if @users
-            render json: { is_success:true, message:'user fetch successfull', data: @users}, status: 200
-        else
-            render json: {is_success:false, message:'user fetch unsuccessfull'}, status: 400
-        end 
-
-    end
-
-    # user sign_up: /users/signup
-    def sign_up
-
-        @user = User.where(email: params[:email])
-
-        if @user == nil
-            
-            @user = User.create(user_params)
-
-            if @user.valid?
-
-            payload = { user_id: @user.id, is_admin: @user.is_admin } 
-
-            token = encode_token(payload)
-
-            render json: {is_success:true, message:'user signup successfully', data: @user, token: token}, status: 201
-            
+            if @users
+                render json: { is_success:true, message:'user fetch successfull', data: @users}, status: 200
             else
+                render json: {is_success:false, message:'user fetch unsuccessfull'}, status: 400
+            end 
 
-            render json: {is_success:false, message:'Invalid credential'}, status: 400
+        end
+
+        # user sign_up: /users/signup
+        def sign_up
+
+            @user = User.where(email: params[:email])
+
+            if @user
+                
+                @user = User.create(user_params)
+
+                if @user.valid?
+
+                    payload = { user_id: @user.id, is_admin: @user.is_admin } 
+
+                    token = encode_token(payload)
+
+                    render json: {is_success:true, message:'user signup successfully', data: @user, token: token}, status: 201
+                
+                else
+
+                    render json: {is_success:false, message:'Invalid credential'}, status: 400
+
+                end
+            else
+                render json: {is_success: false, message:'user already exist'}, status: 400
 
             end
-        else
-            render json: {is_success: false, message:'user already exist'}, status: 400
 
         end
 
-    end
 
+        # LOGGING IN /user/login
+        def login
 
-    # LOGGING IN /user/login
-    def login
-
-        @user = User.find_by(email: params[:email])
-    
-        if @user && @user.authenticate(params[:password])
-
-          payload = { user_id: @user.id, is_admin: @user.is_admin }  
-
-          token = encode_token(payload)
-
-          render json: { is_success: true, message: 'login successful', data: @user, token: token}, status: 200
-
-        else
-
-          render json: { is_success: true, message: 'Invalid username or password' }, status: 404
-
-        end
-
-    end
-    
-    def auto_login
-
-        render json: @user
-
-    end
-
-    
-    # update user /users/:id
-    def update
-
-        if User.exists?(params[:id])
-
-            @user = User.find(params[:id])
-
-            @user.update(user_params)
-
-            render json: { is_success: true, message: 'user detail updated', data: @user }, status: 200
-            
-        else
-
-            render json: { is_success: false, message: 'user not found' }, status: 404
+            @user = User.find_by(email: params[:email])
         
-        end
+            if @user && @user.authenticate(params[:password])
 
-    end
+                payload = { user_id: @user.id, is_admin: @user.is_admin }  
 
-    # delete user /users/:id
-    def destroy
+                token = encode_token(payload)
 
-        if User.exists?(params[:id])
+                render json: { is_success: true, message: 'login successful', data: @user, token: token}, status: 200
 
-            @user = User.find(params[:id])
+            else
 
-            @user.destroy
+                render json: { is_success: true, message: 'Invalid username or password' }, status: 404
 
-            render json: { is_success: true, message: 'user deleted' }, status: 200
-
-        else
-
-            render json: { is_success: false, message: 'user not found'}, status: 404
+            end
 
         end
+        
+        def auto_login
 
-    end
+            render json: @user
+
+        end
+
+        
+        # update user /users/:id
+        def update
+
+            if User.exists?(params[:id])
+
+                @user = User.find(params[:id])
+
+                @user.update(user_params)
+
+                render json: { is_success: true, message: 'user detail updated', data: @user }, status: 200
+                
+            else
+
+                render json: { is_success: false, message: 'user not found' }, status: 404
+            
+            end
+
+        end
+
+        # delete user /users/:id
+        def destroy
+            if is_admin 
+                if User.exists?(params[:id])
+
+                    @user = User.find(params[:id])
+
+                    @user.destroy
+
+                    render json: { is_success: true, message: 'user deleted' }, status: 200
+
+                else
+
+                    render json: { is_success: false, message: 'user not found'}, status: 404
+
+                end
+            else
+                render json: {is_success: false, message: 'you are not authorised'},status: 401
+            end
+
+        end
 
 
-    private
-    
-    def user_params
+        private
+        
+        def user_params
 
-      params.permit(:name, :email, :contact, :designation, :club, :address, :password)
+        params.permit(:name,:is_admin, :email, :contact, :designation, :club, :address, :password)
 
+        end
+
+    rescue
+        render json: { is_success: false, message: 'something went wrong'}, status: 404
     end
 
 end

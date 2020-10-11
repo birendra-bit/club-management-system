@@ -12,6 +12,7 @@ class ApplicationController < ActionController::API
         request.headers['Authorization']
     end
 
+
     def decoded_token       
         if auth_header
             token = auth_header.split(' ')[1]
@@ -24,6 +25,10 @@ class ApplicationController < ActionController::API
         end
     end
 
+   
+    def is_admin
+        decoded_token[0]['is_admin']
+    end
 
     def logged_in_user
         if decoded_token
