@@ -10,6 +10,9 @@ Rails.application.routes.draw do
       patch "/users/:id", to: "users#update"
       delete "/users/:id", to: "users#destroy"
 
+      # newsfeeds api
+      get "/newsfeeds", to: "newsfeeds#index"
+      post "/newsfeeds", to: "newsfeeds#create"
     end
   end
 end
