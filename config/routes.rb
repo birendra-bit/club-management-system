@@ -15,6 +15,10 @@ Rails.application.routes.draw do
       post "/newsfeeds", to: "newsfeeds#create"
       patch "/newsfeeds/:id", to: "newsfeeds#update"
       delete "/newsfeeds/:id", to: "newsfeeds#destroy"
+
+      # evens api
+      get "/events", to: "events#index"
+      post "/events", to: "events#create"
     end
   end
 end

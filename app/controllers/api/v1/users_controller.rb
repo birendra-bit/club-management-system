@@ -25,6 +25,8 @@ class Api::V1::UsersController < ApplicationController
 
           token = encode_token(payload)
 
+          ApplicationMailer.welcome_email(@user).deliver_now
+
           render json: { is_success: true, message: "user signup successfully", data: @user, token: token }, status: 201
         else
           render json: { is_success: false, message: "Invalid credential" }, status: 400

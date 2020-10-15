@@ -57,7 +57,7 @@ class Api::V1::NewsfeedsController < ApplicationController
       end
     end
 
-    private
+    private 
 
     def newsfeed_exist
       Newsfeed.exists?(params[:id])
