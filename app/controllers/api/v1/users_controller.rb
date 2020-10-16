@@ -15,29 +15,22 @@ class Api::V1::UsersController < ApplicationController
 
     # user sign_up: /users/signup
     def sign_up
+      @user = User.create(user_params)
 
-      @user = User.where(email: params[:email])
+      if @user.valid?
+        payload = { user_id: @user.id, is_admin: @user.is_admin }
 
-      if @user
-        @user = User.create(user_params)
+        token = encode_token(payload)
 
-        if @user.valid?
-          payload = { user_id: @user.id, is_admin: @user.is_admin }
+        subject = "Registeration"
 
-          token = encode_token(payload)
+        body = "Dear #{@user.name}\n Your sign up successful in football club management system. Here you can enrolled in upcoming events\n\nwarm regards"
 
-          subject = 'Registeration'
-          
-          body = 'Your sign up successful in football club webpage. Here you can enrolled in upcoming events'
+        ApplicationMailer.send_email(@user, subject, body).deliver_now
 
-          ApplicationMailer.send_email(@user, subject, body).deliver_now
-
-          render json: { is_success: true, message: "user signup successfully", data: @user, token: token }, status: 201
-        else
-          render json: { is_success: false, message: "Invalid credential" }, status: 400
-        end
+        render json: { is_success: true, message: "user signup successfully", data: @user, token: token }, status: 201
       else
-        render json: { is_success: false, message: "user already exist" }, status: 400
+        render json: { is_success: false, message: "Invalid credential or user already exist" }, status: 400
       end
     end
 
@@ -52,7 +45,7 @@ class Api::V1::UsersController < ApplicationController
 
         render json: { is_success: true, message: "login successful", data: @user, token: token }, status: 200
       else
-        render json: { is_success: true, message: "Invalid username or password" }, status: 404
+        render json: { is_success: false, message: "Invalid username or password" }, status: 404
       end
     end
 

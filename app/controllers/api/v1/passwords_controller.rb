@@ -1,5 +1,5 @@
 class Api::V1::PasswordsController < ApplicationController
-  before_action :authorized, except: [:forgot, :reset]
+  before_action :authorized, only: [:update], except: [:forgot, :reset]
 
   def forgot
     if params[:email].blank?
@@ -14,7 +14,7 @@ class Api::V1::PasswordsController < ApplicationController
       # send token in email
       subject = "Token"
 
-      body = "This is your TOKEN to reset your password #{token} use it before it expires"
+      body = "Dear #{user.name}\n This is your TOKEN to reset your password #{token} use it before it expires\n\n\nwarm regards"
 
       ApplicationMailer.send_email(user, subject, body).deliver_now
 
@@ -41,6 +41,23 @@ class Api::V1::PasswordsController < ApplicationController
       end
     else
       render json: { is_success: false, error: "Link not valid or expired. Try generating a new link." }, status: 404
+    end
+  end
+
+  def update
+    if !params[:password].present?
+      render json: { is_success: false, error: "Password not present" }, status: 422
+      return
+    end
+
+    current_user = User.find_by(email: params[:email])
+
+    if current_user.reset_password!(params[:password])
+      body = "Dear #{current_user.name} \nYour update password for club management system is successful\n\nwarm regards"
+      ApplicationMailer.send_email(current_user, "Password update", body).deliver_now
+      render json: { is_success: true, message: "Password update successful" }, status: 200
+    else
+      render json: { is_success: false, errors: current_user.errors.full_messages }, status: 422
     end
   end
 end
