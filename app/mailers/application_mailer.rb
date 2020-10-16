@@ -1,9 +1,8 @@
 class ApplicationMailer < ActionMailer::Base
   default from: 'kuzuzangpola3@gmail.com'
   # layout 'mailer'
-  def welcome_email(user)
+  def send_email(user, subject, body)
     @user = user
-    puts('user email: ',@user.email)
-    mail(to: @user.email, subject: 'Registeration', body:'Your sign up successful')
+    mail(to: @user.email, subject: subject, body: body)
   end
 end

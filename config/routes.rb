@@ -19,6 +19,10 @@ Rails.application.routes.draw do
       # evens api
       get "/events", to: "events#index"
       post "/events", to: "events#create"
+
+      #password
+      post "/passwords/forgot", to: "passwords#forgot"
+      post "/passwords/reset", to: "passwords#reset"
     end
   end
 end

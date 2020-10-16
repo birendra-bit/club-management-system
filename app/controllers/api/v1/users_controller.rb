@@ -15,6 +15,7 @@ class Api::V1::UsersController < ApplicationController
 
     # user sign_up: /users/signup
     def sign_up
+
       @user = User.where(email: params[:email])
 
       if @user
@@ -25,7 +26,11 @@ class Api::V1::UsersController < ApplicationController
 
           token = encode_token(payload)
 
-          ApplicationMailer.welcome_email(@user).deliver_now
+          subject = 'Registeration'
+          
+          body = 'Your sign up successful in football club webpage. Here you can enrolled in upcoming events'
+
+          ApplicationMailer.send_email(@user, subject, body).deliver_now
 
           render json: { is_success: true, message: "user signup successfully", data: @user, token: token }, status: 201
         else
