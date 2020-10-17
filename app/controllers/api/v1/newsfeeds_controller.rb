@@ -19,7 +19,7 @@ class Api::V1::NewsfeedsController < ApplicationController
           subject = "News update"
           body = "There is news update in club management system. Please visit our page to update yourslef with current news\n\nWarm regards\nClub Management System"
 
-          send_notice_to_all(@user, subject, body)
+          ApplicationMailer.send_notice_to_all(@user, subject, body)
 
           render json: { is_success: true, message: "newsfeeds creation successful", data: @news }, status: 201
         else
@@ -71,18 +71,6 @@ class Api::V1::NewsfeedsController < ApplicationController
 
     def newsfeed_params
       params.permit(:user_id, :title, :image_url, :content)
-    end
-
-    def send_notice_to_all(user, subject, body)
-      @user = user
-
-      for u in @user
-        if !u.is_admin
-          msg = ""
-          msg = "Dear #{u.name}\n\n" + body
-          ApplicationMailer.send_email(u, subject, msg).deliver_later(wait: 1.minute)
-        end
-      end
     end
   rescue
     render json: { is_success: false, message: "something went wrong" }, status: 404

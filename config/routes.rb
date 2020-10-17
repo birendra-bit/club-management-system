@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       post "/events", to: "events#create"
       patch "/events/:id", to: "events#update"
       delete "/events/:id", to: "events#destroy"
+      patch "/events/:id/enroll/:user_id", to: "events#event_register"
 
       #password
       post "/passwords/forgot", to: "passwords#forgot"
