@@ -24,9 +24,9 @@ class Api::V1::UsersController < ApplicationController
 
         subject = "Registeration"
 
-        body = "Dear #{@user.name}\n Your sign up successful in football club management system. Here you can enrolled in upcoming events\n\nwarm regards"
+        body = "Dear #{@user.name}\n\nYour sign up successful in football club management system. Here you can enrolled in upcoming events\n\nwarm regards\nClub Management System"
 
-        ApplicationMailer.send_email(@user, subject, body).deliver_now
+        ApplicationMailer.send_email(@user, subject, body).deliver_later(wait: 30.seconds)
 
         render json: { is_success: true, message: "user signup successfully", data: @user, token: token }, status: 201
       else

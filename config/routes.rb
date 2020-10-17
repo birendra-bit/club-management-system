@@ -16,15 +16,16 @@ Rails.application.routes.draw do
       patch "/newsfeeds/:id", to: "newsfeeds#update"
       delete "/newsfeeds/:id", to: "newsfeeds#destroy"
 
-      # evens api
+      # events api
       get "/events", to: "events#index"
       post "/events", to: "events#create"
+      patch "/events/:id", to: "events#update"
+      delete "/events/:id", to: "events#destroy"
 
       #password
       post "/passwords/forgot", to: "passwords#forgot"
       post "/passwords/reset", to: "passwords#reset"
       post "/passwords/update", to: "passwords#update"
-
     end
   end
 end
