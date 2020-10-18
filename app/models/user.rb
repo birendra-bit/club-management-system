@@ -3,7 +3,6 @@ class User < ApplicationRecord
   validates :name, :password_digest, :email, :contact, presence: true
   validates :email, uniqueness: true
   has_many :newsfeeds
-  has_many :events
 
   def generate_password_token!
     token = generate_token

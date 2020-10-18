@@ -10,11 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_15_151713) do
+ActiveRecord::Schema.define(version: 2020_10_18_061712) do
 
   create_table "events", force: :cascade do |t|
     t.string "title"
-    t.integer "user_id", null: false
     t.datetime "event_time"
     t.string "venu"
     t.string "organizer"
@@ -22,7 +21,6 @@ ActiveRecord::Schema.define(version: 2020_10_15_151713) do
     t.integer "participants"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id"], name: "index_events_on_user_id"
   end
 
   create_table "newsfeeds", force: :cascade do |t|
@@ -48,8 +46,10 @@ ActiveRecord::Schema.define(version: 2020_10_15_151713) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
+    t.integer "event_id"
+    t.index ["event_id"], name: "index_users_on_event_id"
   end
 
-  add_foreign_key "events", "users"
   add_foreign_key "newsfeeds", "users"
+  add_foreign_key "users", "events"
 end
