@@ -22,6 +22,9 @@ Rails.application.routes.draw do
       patch "/events/:id", to: "events#update"
       delete "/events/:id", to: "events#destroy"
       patch "/events/:id/enroll/:user_id", to: "events#event_register"
+      get "/events/past", to: "events#past"
+      get "/events/upcoming", to: "events#upcoming"
+      get "/events/current", to: "events#current"
 
       #password
       post "/passwords/forgot", to: "passwords#forgot"

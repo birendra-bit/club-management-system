@@ -86,6 +86,33 @@ class Api::V1::EventsController < ApplicationController
     end
   end
 
+  def past
+    @events = Event.where("event_time > ? ", date.today)
+    if @events
+      render json: { is_success: true, message: "Events fetch successful", data: @events }, status: 200
+    else
+      render json: { is_success: false, message: "Events fetch not successful" }, status: 404
+    end
+  end
+
+  def current
+    @events = Event.where("event_time == ? ", date.today)
+    if @events
+      render json: { is_success: true, message: "Events fetch successful", data: @events }, status: 200
+    else
+      render json: { is_success: false, message: "Events fetch not successful" }, status: 404
+    end
+  end
+
+  def upcoming
+    @events = Event.where("event_time < ? ", date.today)
+    if @events
+      render json: { is_success: true, message: "Events fetch successful", data: @events }, status: 200
+    else
+      render json: { is_success: false, message: "Events fetch not successful" }, status: 404
+    end
+  end
+
   private
 
   def event_params
