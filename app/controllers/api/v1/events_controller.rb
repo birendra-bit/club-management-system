@@ -113,6 +113,13 @@ class Api::V1::EventsController < ApplicationController
     end
   end
 
+  def user_registered_events
+    @register = Registeration.where("user_id = ?", params[:user_id])
+    # @events = @register.map { |x| x.event }
+
+    render json: { data: @register.map { |x| x.event } }, status: 200
+  end
+
   private
 
   def event_params

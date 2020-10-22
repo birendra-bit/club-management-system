@@ -25,11 +25,16 @@ Rails.application.routes.draw do
       get "/events/past", to: "events#past"
       get "/events/upcoming", to: "events#upcoming"
       get "/events/current", to: "events#current"
+      get "/events/byuserid/:user_id", to: "events#user_registered_events"
 
       #password
       post "/passwords/forgot", to: "passwords#forgot"
       post "/passwords/reset", to: "passwords#reset"
       post "/passwords/update", to: "passwords#update"
+
+      post "/registration", to: "registrations#create"
+      get "/registration", to: "registrations#index"
+      get "/registration/:id", to: "registrations#fetch_participants"
     end
   end
 end
